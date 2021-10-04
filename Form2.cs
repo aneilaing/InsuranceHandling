@@ -18,12 +18,13 @@ namespace InsuranceHandling
         {
             InitializeComponent();
             resultsLabel.Hide();
-
+            //connecting to the Database
             string connetionString;
             SqlConnection cnn;
             connetionString = @"Data Source=interview-testing-server.database.windows.net;Initial Catalog=Interview;User ID=TestLogin;Password=5D9ej2G64s3sd^";
             cnn = new SqlConnection(connetionString);
 
+            //decalring a list variable for holding the list of objects
             List<LossTypesClass> lossList = new List<LossTypesClass>();
 
             try
@@ -35,36 +36,39 @@ namespace InsuranceHandling
                 SqlDataReader dataReader;
                 String sql = "";
              
+                //sql statement for getting the loss type data from the database
                 sql = "SELECT LossTypeID, LossTypeCode, LossTypeDescription from LossTypes";
 
                 command = new SqlCommand(sql, cnn);
                 dataReader = command.ExecuteReader();
 
+                //reading the data
                 while (dataReader.Read())
                 {
-                   
+                   // temp variables for storing the data returned
                     Byte lID = Convert.ToByte(dataReader["LossTypeID"]);
                     String lCode = dataReader["LossTypeCode"].ToString();
                     String lDesc = dataReader["LossTypeDescription"].ToString();
 
+                    //creating a temp LossTypes Class Object
                     LossTypesClass tempLoss = new LossTypesClass(lID, lCode, lDesc);
                     
+                    //Adding the temp object to the list of objects
                     lossList.Add(tempLoss);
                    
                 }
           
-
+                //populating the combo boxes with the data
                 foreach (var lossT in lossList)
                 {
                     
                     lossCodeCombo.Items.Add(lossT.LossCode.ToString());
                     lossDescCombo.Items.Add(lossT.LossDescription.ToString());
                 }
-           
 
+                //clsoing the data reader, command, connection
                 dataReader.Close();
                 command.Dispose();
-
                 cnn.Close();
             }
             catch (Exception ex)
@@ -100,6 +104,7 @@ namespace InsuranceHandling
       
         }
     }
+    
     public class LossTypesClass
     {
         byte lossID;
